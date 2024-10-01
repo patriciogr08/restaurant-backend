@@ -24,7 +24,7 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ];
@@ -34,9 +34,9 @@ class RegisterRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'El nombre es obligatorio.',
-            'name.string' => 'El nombre debe ser una cadena de texto válida.',
-            'name.max' => 'El nombre no puede exceder los 255 caracteres.',
+            'username.required' => 'El nombre es obligatorio.',
+            'username.string' => 'El nombre debe ser una cadena de texto válida.',
+            'username.max' => 'El nombre no puede exceder los 255 caracteres.',
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.email' => 'Por favor, proporciona un correo electrónico válido.',
             'email.max' => 'El correo electrónico no puede exceder los 255 caracteres.',

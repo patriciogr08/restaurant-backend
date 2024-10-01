@@ -24,7 +24,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
+            'username' => 'required|string',
             'password' => 'required|string',
         ];
     }
@@ -34,7 +34,7 @@ class LoginRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'El usuario es obligatorio.',
+            'username.required' => 'El usuario es obligatorio.',
             'password.required' => 'La contraseña es obligatoria.',
         ];
     }

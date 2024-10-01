@@ -23,17 +23,26 @@ class AuthController extends Controller
         try {
             //code...
             $usuario = [
-                'name' => $request->name,
+                'username' => $request->username,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ];
 
-            $user = User::create($usuario);
+            $data    = User::create($usuario);
+            $status  = Response::HTTP_CREATED;
+            $message = "Usuario creado correctamente.";
+
 
             return response()->json(['message' => 'Usuario registrado correctamente'], Response::HTTP_CREATED);
-        } catch (\Throwable $th) {
-            return response()->json(['message' => 'Error al registrar el usuario'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (\Throwable $ex) {
+            $status  = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $message = $ex->getMessage();
+
+            return response_error($status, $message);
         }
+
+        return response_success($data, $status, $message);
+
     }
  
  // Login de usuarios utilizando el LoginRequest para validación
@@ -41,8 +50,11 @@ class AuthController extends Controller
     {
         try {
             // Intento de autenticación
-            if (!auth()->attempt($request->only('name', 'password'))) {
-                return response()->json(['message' => 'Credenciales no válidas'], Response::HTTP_UNPROCESSABLE_ENTITY);
+            if (!auth()->attempt($request->only('username', 'password'))) {
+                $status  = Response::HTTP_UNPROCESSABLE_ENTITY;
+                $message = "* Credenciales Inválidas.";
+ 
+                return response_error($status, $message);
             }
 
             // Obtener el usuario autenticado
@@ -57,8 +69,11 @@ class AuthController extends Controller
                 'expiresAt'    => Carbon::parse($token->token->expires_at)->toDateTimeString()
             ]);
         } catch (\Throwable $ex) {
-            //throw $th;
-            return response()->json(['message' => $ex->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $status  = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $message = "Ocurrió un error al iniciar la sesión de usuario.";
+
+            return response_error($status, $message);
+
         }
     }
 
@@ -67,6 +82,9 @@ class AuthController extends Controller
     {
         // Revocar el token de acceso
         auth()->user()->token()->revoke();
-        return response()->json(['message' => 'Sesión cerrada correctamente']);
+        $status  = Response::HTTP_OK;
+        $message = "Ha ingresado al sistema satisfactoriamente.";
+        
+        return response_success( true, $status, $message);
     }
 }

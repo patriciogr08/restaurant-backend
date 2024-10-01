@@ -3,6 +3,14 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use \Illuminate\Validation\ValidationException;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -41,10 +49,41 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
+
+    public function render($request, Throwable $exception)
+    {
+        // Si es una solicitud de API y la excepción es de tipo NotFoundHttpException
+        if ($exception instanceof NotFoundHttpException) {
+            $status = Response::HTTP_NOT_FOUND;
+            $message = "Recurso no encontrado.";
+            return response_error($status, $message);
+        }
+
+        // Si es una solicitud de API y la excepción es de tipo ModelNotFoundException
+        if ($exception instanceof ModelNotFoundException) {
+            $status = Response::HTTP_NOT_FOUND;
+            $message = "Recurso no encontrado.";
+            return response_error($status, $message);
+        }
+        
+
+        // Puedes agregar más excepciones que quieras manejar aquí
+
+        // Llamar al render original para cualquier otra excepción no manejada
+        return parent::render($request, $exception);
+    }
+
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->reportable(function ( Throwable  $exception) {
         });
+    }
+
+
+    protected function unauthenticated($request,AuthenticationException $exception)
+    {
+        $status = Response::HTTP_UNAUTHORIZED;
+        $message = "No tienes acceso. Por favor, inicia sesión.";
+        return response_error($status, $message);
     }
 }
