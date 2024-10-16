@@ -66,16 +66,35 @@ class Handler extends ExceptionHandler
             return response_error($status, $message);
         }
         
+        // Si es una solicitud de API y la excepción es de tipo ValidationException
+        if ($exception instanceof ValidationException) {
+            $status = Response::HTTP_UNPROCESSABLE_ENTITY;
+            $message = $exception->validator->errors()->first();
+            return response_error($status, $message);
+        }
 
-        // Puedes agregar más excepciones que quieras manejar aquí
+        // Si es una solicitud de API y la excepción es de tipo BadRequestHttpException
+        if ($exception instanceof BadRequestHttpException) {
+            $status = Response::HTTP_BAD_REQUEST;
+            $message = "Petición incorrecta.";
+            return response_error($status, $message);
+        }
 
-        // Llamar al render original para cualquier otra excepción no manejada
+        // Si es una solicitud de API y la excepción es de tipo AuthorizationException
+        if ($exception instanceof AuthorizationException) {
+            $status = Response::HTTP_FORBIDDEN;
+            $message = "No tienes permiso para acceder a este recurso.";
+            return response_error($status, $message);
+        }
+        
+
         return parent::render($request, $exception);
     }
 
     public function register()
     {
         $this->reportable(function ( Throwable  $exception) {
+            
         });
     }
 

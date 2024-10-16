@@ -12,6 +12,9 @@ class RestaurantSeeder extends Seeder
      */
     public function run()
     {
+        $this->setCommandTitle( 'ROLES' );
+        $this->call( RolesSeeder::class );
+
         $this->setCommandTitle( 'PERFILES' );
         $this->call( PerfilSeeder::class );
 
@@ -21,10 +24,8 @@ class RestaurantSeeder extends Seeder
         $this->setCommandTitle( 'USUARIOS' );
         $this->call( UserSeeder::class );
 
+
     }
-
-
-
 
         private function setCommandTitle( $name ) {
             $this->command->info( "******************* IM $name SEEDER *******************" );

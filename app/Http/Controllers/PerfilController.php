@@ -2,28 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\BusinessLogic\UserBusinessLogic;
-use App\Http\Requests\CreateUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\BusinessLogic\PerfilBusinessLogic;
+use App\Http\Requests\CreatePerfil;
+use App\Http\Requests\UpdatePerfil;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
+class PerfilController extends Controller
 {
     //
-
-    private $userBusinessLogic;
+    private $perfilBusinessLogic;
 
     public function __construct() {
-        $this->userBusinessLogic = new UserBusinessLogic();
+        $this->perfilBusinessLogic = new PerfilBusinessLogic();
     }
 
     public function index() {
         $status     = Response::HTTP_OK;
-        $message    = 'Usuarios obtenidos correctamente';
-        $data =  $this->userBusinessLogic->index();
+        $message    = 'Perfiles obtenidos correctamente';
+        $data =  $this->perfilBusinessLogic->index();
 
         return response_success($data, $status, $message);
 
@@ -32,106 +30,106 @@ class UserController extends Controller
     public function show($id) {
         try {
             $status     = Response::HTTP_OK;
-            $message    = 'Usuario obtenido correctamente';
-            $data =  $this->userBusinessLogic->show($id);
+            $message    = 'Perfil obtenido correctamente';
+            $data =  $this->perfilBusinessLogic->show($id);
     
         }  catch (ModelNotFoundException $ex) {
             $status = Response::HTTP_NOT_FOUND;
-            $message = "Usuario no encontrado";
+            $message = "Perfil no encontrado";
             return response_error($status, $message);
 
         } catch (\Throwable $th) {
             $status = Response::HTTP_BAD_REQUEST;
-            $message = "Ocurrió un error al obtener el usuario";
+            $message = "Ocurrió un error al obtener el perfil";
             return response_error($status, $message);
         }
 
         return response_success($data, $status, $message);
     }
 
-    public function store( CreateUserRequest $request){
+    public function store( CreatePerfil $request){
         try {
-            $data =  $this->userBusinessLogic->store($request);
-    
+
+            $data =  $this->perfilBusinessLogic->store($request);
         } catch (\Throwable $ex) {
             $status = Response::HTTP_BAD_REQUEST;
-            $message = "Ocurrió un error al crear el usuario";
+            $message = "Ocurrió un error al crear el perfil";
             return response_error($status, $message);
         }
 
         $status     = Response::HTTP_CREATED;
-        $message    = 'Usuario creado correctamente';
-
+        $message    = 'Perfil creado correctamente';
         return response_success($data, $status, $message);
+
     }
 
-    public function update(UpdateUserRequest $request, $id) {
+    public function update( UpdatePerfil $request, $id){
         try {
-            $data =  $this->userBusinessLogic->update($request, $id);
-    
-        } catch (ModelNotFoundException $ex) {
-            $status = Response::HTTP_NOT_FOUND;
-            $message = "Usuario no encontrado";
-            return response_error($status, $message);
 
-        } catch (\Throwable $th) {
+            $data =  $this->perfilBusinessLogic->update($request, $id);
+
+        }  catch (ModelNotFoundException $ex) {
+            $status = Response::HTTP_NOT_FOUND;
+            $message = "Perfil no encontrado";
+            return response_error($status, $message);
+        } catch (\Throwable $ex) {
             $status = Response::HTTP_BAD_REQUEST;
-            $message = "Ocurrió un error al actualizar el usuario";
+            $message = "Ocurrió un error al actualizar el Perfil";
             return response_error($status, $message);
         }
 
         $status     = Response::HTTP_OK;
-        $message    = 'Usuario actualizado correctamente';
-
+        $message    = 'Perfil actualizado correctamente';
         return response_success($data, $status, $message);
     }
 
-    public function destroy($id) {
+    public function destroy($id){
         try {
-            $data =  $this->userBusinessLogic->destroy($id);
-    
+            $data =  $this->perfilBusinessLogic->destroy($id);
         } catch (ModelNotFoundException $ex) {
             $status = Response::HTTP_NOT_FOUND;
-            $message = "Usuario no encontrado";
+            $message = "Perfil no encontrado";
             return response_error($status, $message);
-
-        } catch (\Throwable $th) {
+        } catch (\Throwable $ex) {
             $status = Response::HTTP_BAD_REQUEST;
-            $message = "Ocurrió un error al eliminar el usuario";
+            $message = "Ocurrió un error al eliminar el perfil";
             return response_error($status, $message);
         }
 
         $status     = Response::HTTP_OK;
-        $message    = 'Usuario eliminado correctamente';
-
+        $message    = 'Perfil eliminado correctamente';
         return response_success($data, $status, $message);
     }
 
     public function all(){
+        try {
+            $data =  $this->perfilBusinessLogic->all();
+        } catch (\Throwable $ex) {
+            $status = Response::HTTP_BAD_REQUEST;
+            $message = "Ocurrió un error al obtener los perfiles";
+            return response_error($status, $message);
+        }
         $status     = Response::HTTP_OK;
-        $message    = 'Usuarios obtenidos correctamente';
-        $data =  $this->userBusinessLogic->all();
-
+        $message    = 'Perfiles obtenidos correctamente';
         return response_success($data, $status, $message);
-
     }
 
     public function restore($id){
         try {
-            $data =  $this->userBusinessLogic->restore($id);
+            $data =  $this->perfilBusinessLogic->restore($id);
         } catch (ModelNotFoundException $ex) {
             $status = Response::HTTP_NOT_FOUND;
-            $message = "Usuario no encontrado";
+            $message = "Perfil no encontrado";
             return response_error($status, $message);
         } catch (\Throwable $ex) {
             $status = Response::HTTP_BAD_REQUEST;
-            $message = "Ocurrió un error al restaurar el usuario";
+            $message = "Ocurrió un error al restaurar el perfil";
             return response_error($status, $message);
         }
 
         $status     = Response::HTTP_OK;
-        $message    = 'Usuario restaurado correctamente';
+        $message    = 'Perfil restaurado correctamente';
         return response_success($data, $status, $message);
     }
+    
 }
-

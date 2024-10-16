@@ -20,6 +20,7 @@ class ParametrosSeeder extends Seeder
 
         $rows = [];
         $rows[] = (new ParametrosInicialesSeeder)();
+        $rows[] = (new ParametroIva)();
 
 
         $contador = [

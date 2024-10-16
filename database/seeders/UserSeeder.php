@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Perfil;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
@@ -34,5 +34,17 @@ class UserSeeder extends Seeder
                 }
             }
         }
+
+        $admin = User::where('username', 'admin')->first();
+        if ($admin) {
+            $adminRole = Role::where('name', 'admin')->first();
+            if ($adminRole) {
+            $admin->assignRole($adminRole);
+            $this->command->info("Rol 'admin' asignado al usuario: " . $admin->username);
+            } else {
+            $this->command->error("Rol 'admin' no encontrado.");
+            }
+        }
+
     }
 }

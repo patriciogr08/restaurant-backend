@@ -63,14 +63,25 @@ class AuthController extends Controller
             // Crear un token de acceso con Passport
             $token = $user->createToken('authToken');
 
+
+            $permisos    = [];
+            $objPermisos = $user->getAllPermissions();            
+            foreach ( $objPermisos as $permiso ) { 
+                array_push($permisos, $permiso->name); 
+            }
+            
+            $roles     = $user->getRoleNames();
+            
             return response()->json([
                 'accessToken'  => $token->accessToken,
                 'createdAt'    => Carbon::parse($token->token->created_at)->toDateTimeString(),
-                'expiresAt'    => Carbon::parse($token->token->expires_at)->toDateTimeString()
+                'expiresAt'    => Carbon::parse($token->token->expires_at)->toDateTimeString(),
+                'roles'        => $roles,
+                'permisos'     => $permisos,
             ]);
         } catch (\Throwable $ex) {
             $status  = Response::HTTP_INTERNAL_SERVER_ERROR;
-            $message = "Ocurrió un error al iniciar la sesión de usuario.";
+            $message = $ex->getMessage();//"Ocurrió un error al iniciar la sesión de usuario.";
 
             return response_error($status, $message);
 

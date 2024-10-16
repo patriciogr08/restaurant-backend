@@ -44,7 +44,6 @@ class UserBusinessLogic {
             $user->save();
             return $user;
         } catch ( Throwable $ex) {
-            // Handle the exception, log it, or return a custom error response
             throw new Exception('Error: ' . $ex->getMessage() . ' Clase: ' . class_basename($this));
         }
     }
@@ -72,6 +71,28 @@ class UserBusinessLogic {
         } catch (Throwable $ex) {
             throw new Exception('Error: ' . $ex->getMessage() . ' Clase: ' . class_basename($this));
         }
+    }
+
+    public function restore(int $id){
+        try {
+            $user = User::withTrashed()->findOrFail($id);
+            $user->restore();
+            return $user;
+        } catch (ModelNotFoundException $ex) {
+            throw new ModelNotFoundException("Error: " . $ex->getMessage() . ". Clase: " . class_basename($this));
+        } catch (Throwable $ex) {
+            throw new Exception('Error: ' . $ex->getMessage() . ' Clase: ' . class_basename($this));
+        }
+    }
+
+    public function all(){
+        try {
+            $usuarios = User::withTrashed()->with('perfil')->get();
+        } catch (Throwable $ex) {
+            throw new Exception('Error'.$ex->getMessage().' Clase: '.class_basename($this));        
+        }
+
+        return $usuarios;
     }
     
 }

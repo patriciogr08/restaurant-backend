@@ -11,15 +11,21 @@ class ParametroBusinessLogic {
     public function __construct(){
     }
 
-    public function obtenerParametrosHijos($codigoPadre) {
-        $parametroPadre = Parametro::where('codigo', $codigoPadre)->first();
-        if ($parametroPadre) {
-            return $parametroPadre->children;
-        }
-        return collect();
+    public function getChildren($codigoPadre) {
+        try {
+            $parametroPadre = Parametro::where('codigo', $codigoPadre)->first();
+            if ($parametroPadre) {
+                return $parametroPadre->children;
+            }
+            return collect();
+            
+        } catch (\Throwable $ex) {
+            throw new Exception('Error'.$ex->getMessage().' Clase: '.class_basename($this));
+
+        }        
     }
 
-    public function crearParametro( $request){
+    public function store( $request){
         try {
             $data = $request->all();
             $data['idUsuarioCreacion'] = Auth::user()->id;
